@@ -41,8 +41,10 @@
         <zsrd.version>1.0-SNAPSHOT</zsrd.version>
         <joda.version>2.10.10</joda.version>
         <kafka.connect.version>2.7.0</kafka.connect.version>
-        <debezium.version>1.5.0.Final</debezium.version>
-        <debezium.core.version>1.5.0.CR1</debezium.core.version>
+        <debezium.version>1.4.0.Final</debezium.version>
+        <confluent.version>5.3.2</confluent.version>
+        <avro.version>1.10.0</avro.version>
+        <pulsar.version>2.3.1</pulsar.version>
     </properties>
 
     <dependencies>
@@ -95,6 +97,65 @@
                 <artifactId>cdc-common</artifactId>
                 <version>${zsrd.version}</version>
             </dependency>
+
+            <dependency>
+                <groupId>org.apache.avro</groupId>
+                <artifactId>avro</artifactId>
+                <version>${avro.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.confluent</groupId>
+                <artifactId>kafka-avro-serializer</artifactId>
+                <version>${confluent.version}</version>
+            </dependency>
+
+            <!--<dependency>
+                <groupId>io.confluent</groupId>
+                <artifactId>kafka-schema-registry</artifactId>
+                <version>5.2.1</version>
+            </dependency>-->
+
+            <dependency>
+                <groupId>io.confluent</groupId>
+                <artifactId>kafka-schema-registry-client</artifactId>
+                <version>${confluent.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.confluent</groupId>
+                <artifactId>common-config</artifactId>
+                <version>${confluent.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.confluent</groupId>
+                <artifactId>common-utils</artifactId>
+                <version>${confluent.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.confluent</groupId>
+                <artifactId>common</artifactId>
+                <version>${confluent.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.pulsar</groupId>
+                <artifactId>pulsar-client</artifactId>
+                <version>${pulsar.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.pulsar</groupId>
+                <artifactId>pulsar-client-kafka-original</artifactId>
+                <version>${pulsar.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.springframework.kafka</groupId>
+                <artifactId>spring-kafka</artifactId>
+            </dependency>
+
             <dependency>
                 <groupId>org.apache.kafka</groupId>
                 <artifactId>connect-api</artifactId>
@@ -111,7 +172,7 @@
             <dependency>
                 <groupId>io.debezium</groupId>
                 <artifactId>debezium-core</artifactId>
-                <version>${debezium.core.version}</version>
+                <version>${debezium.version}</version>
             </dependency>
 
             <dependency>

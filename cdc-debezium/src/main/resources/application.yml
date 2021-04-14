@@ -1,5 +1,5 @@
 server:
-  port: 8081
+  port: 8091
   servlet:
     context-path: /debezium
 
@@ -21,13 +21,14 @@ spring:
     show-sql: true
   kafka:
     bootstrap-servers: localhost:9092
-      consumer:
-        group-id: debezium-kafka-connector
-        key-deserializer: "io.confluent.kafka.serializers.KafkaAvroDeserializer"
-        value-deserializer: "io.confluent.kafka.serializers.KafkaAvroDeserializer"
-#        配置schema存放的仓库
-#      properties:
-#        schema.registry.url: http://localhost:8081
+    consumer:
+      group-id: debezium-kafka-connector
+      key-deserializer: "io.confluent.kafka.serializers.KafkaAvroDeserializer"
+      value-deserializer: "io.confluent.kafka.serializers.KafkaAvroDeserializer"
+      #      配置schema存放的仓库
+      properties:
+        schema.registry.url: http://localhost:8081
+
 
 mybatis-plus:
   mapper-locations: classpath*:/mapper/*.xml

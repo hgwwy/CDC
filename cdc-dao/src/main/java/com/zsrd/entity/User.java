@@ -1,6 +1,5 @@
 package com.zsrd.entity;
 
-import com.alibaba.fastjson.annotation.JSONField;
 import com.baomidou.mybatisplus.annotation.*;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.zsrd.enums.UserSexEnum;
@@ -56,7 +55,6 @@ public class User implements Serializable {
     private Boolean delFlag;
 
     @TableField("birthday")
-    @JSONField(format = "yyyy-MM-dd")
     private Date birthday;
 
     @TableField("create_time")

@@ -1,9 +1,7 @@
 package com.zsrd.debezium.config;
 
-import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.connect.json.JsonConverter;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PropertiesLoaderUtils;
@@ -12,8 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-@Slf4j
-@Configuration
+//@Configuration
 public class DebeziumEmbeddedAutoConfiguration {
 
     @Bean

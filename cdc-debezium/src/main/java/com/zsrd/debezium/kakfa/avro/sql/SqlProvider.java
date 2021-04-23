@@ -2,7 +2,7 @@ package com.zsrd.debezium.kakfa.avro.sql;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.zsrd.debezium.kakfa.avro.parser.KakfaConsumerAvroParserFactory;
+import com.zsrd.debezium.kakfa.avro.parser.KafkaConsumerAvroParserFactory;
 import com.zsrd.debezium.kakfa.avro.parser.kafkaParser;
 import com.zsrd.utils.CharUtils;
 import org.apache.avro.Schema;
@@ -136,7 +136,7 @@ public abstract class SqlProvider {
                     .findFirst().orElse(null);
 
             String connectName = schema.getProp("connect.name");
-            kafkaParser parser = KakfaConsumerAvroParserFactory.getParser(connectName);
+            kafkaParser parser = KafkaConsumerAvroParserFactory.getParser(connectName);
             if (Objects.nonNull(parser)) {
                 return parser.parse(schema, value);
             }

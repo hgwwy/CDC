@@ -19,7 +19,7 @@
             "config": {
             "connector.class": "io.debezium.connector.mysql.MySqlConnector",
             "tasks.max": "1",
-            "database.hostname": "localhost",
+            "database.hostname": "mysql",
             "database.port": "3306",
             "database.user": "root",
             "database.password": "123456",

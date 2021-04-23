@@ -4,7 +4,7 @@ import com.google.common.collect.Maps;
 
 import java.util.Map;
 
-public class KakfaConsumerAvroParserFactory {
+public class KafkaConsumerAvroParserFactory {
 
     private static Map<String, kafkaParser> parserMap = Maps.newHashMap();
 

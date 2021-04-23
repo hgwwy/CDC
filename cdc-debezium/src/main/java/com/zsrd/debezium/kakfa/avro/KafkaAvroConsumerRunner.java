@@ -5,14 +5,18 @@ import com.zsrd.debezium.kakfa.avro.sql.SqlProviderFactory;
 import io.debezium.data.Envelope;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.avro.generic.GenericData;
+import org.apache.avro.util.Utf8;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterUtils;
+import org.springframework.jdbc.core.namedparam.ParsedSql;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -23,9 +27,6 @@ public class KafkaAvroConsumerRunner {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
-
-    @Autowired
-    private NamedParameterJdbcTemplate namedTemplate;
 
     @KafkaListener(id = "dbserver1-ddl-consumer", topics = "dbserver1")
     public void listenerUser(ConsumerRecord<GenericData.Record, GenericData.Record> record) throws Exception {
@@ -99,8 +100,20 @@ public class KafkaAvroConsumerRunner {
         }
 
         try {
-            log.info("dml语句 : {}", sql);
-            namedTemplate.update(sql, provider.getSqlParameterMap());
+            MapSqlParameterSource parameterSource = new MapSqlParameterSource(provider.getSqlParameterMap());
+            String result_sql = NamedParameterUtils.substituteNamedParameters(sql, parameterSource);
+            ParsedSql parsedSql = NamedParameterUtils.parseSqlStatement(sql);
+            Object[] params = NamedParameterUtils.buildValueArray(parsedSql, parameterSource, null);
+            for (int i = 0; i < params.length; i++) {
+                Object o = params[i];
+                if (o instanceof String || o instanceof LocalDate || o instanceof Utf8) {
+                    result_sql = result_sql.replaceFirst("\\?", "'" + o + "'");
+                } else {
+                    result_sql = result_sql.replaceFirst("\\?", String.valueOf(o));
+                }
+            }
+            log.info("dml语句 : {}", result_sql);
+            jdbcTemplate.execute(result_sql);
         } catch (Exception e) {
             log.error("数据库DML操作失败，", e);
         }

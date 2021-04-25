@@ -47,6 +47,7 @@
         <pulsar.version>2.3.1</pulsar.version>
         <druid.version>1.1.22</druid.version>
         <spring.kafka.version>2.6.7</spring.kafka.version>
+        <oracle.version>11.2.0.3</oracle.version>
     </properties>
 
     <dependencies>
@@ -99,6 +100,7 @@
                 <artifactId>cdc-common</artifactId>
                 <version>${zsrd.version}</version>
             </dependency>
+
             <dependency>
                 <groupId>org.apache.avro</groupId>
                 <artifactId>avro</artifactId>
@@ -200,6 +202,12 @@
                 <groupId>io.debezium</groupId>
                 <artifactId>debezium-connector-mysql</artifactId>
                 <version>${debezium.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.oracle</groupId>
+                <artifactId>ojdbc6</artifactId>
+                <version>${oracle.version}</version>
             </dependency>
 
             <!-- spring-cloud-->

@@ -9,6 +9,6 @@ public class TimestampParser implements kafkaParser<Object, String> {
 
     @Override
     public String parse(Schema schema, Object value) {
-        return DateFormatUtils.format(new Date((long) value), "yyyy-MM-dd HH:mm:ss");
+        return "{ts '" + DateFormatUtils.format(new Date((long) value - 8 * 60 * 60 * 1000), "yyyy-MM-dd HH:mm:ss")+ "'}";
     }
 }

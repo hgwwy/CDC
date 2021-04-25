@@ -16,7 +16,6 @@ import org.springframework.jdbc.core.namedparam.ParsedSql;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDate;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -87,28 +86,32 @@ public class KafkaAvroConsumerRunner {
 
     private void handleDML(GenericData.Record key, GenericData.Record value,
                            String table, Envelope.Operation operation) {
-        SqlProvider provider = SqlProviderFactory.getProvider(operation);
-        if (Objects.isNull(provider)) {
-            log.error("没有找到sql处理器提供者.");
-            return;
-        }
-
-        String sql = provider.getSql(key, value, table);
-        if (StringUtils.isBlank(sql)) {
-            log.error("找不到sql.");
-            return;
-        }
-
         try {
+            String driverName = jdbcTemplate.getDataSource().getConnection().getMetaData().getDriverName();
+            if (driverName.equals("Oracle JDBC driver")) {
+                table = "\""+ StringUtils.upperCase(table) + "\"";
+            }
+            SqlProvider provider = SqlProviderFactory.getProvider(operation);
+            if (Objects.isNull(provider)) {
+                log.error("没有找到sql处理器提供者.");
+                return;
+            }
+
+            String sql = provider.getSql(key, value, table);
+            if (StringUtils.isBlank(sql)) {
+                log.error("找不到sql.");
+                return;
+            }
+
             MapSqlParameterSource parameterSource = new MapSqlParameterSource(provider.getSqlParameterMap());
             String result_sql = NamedParameterUtils.substituteNamedParameters(sql, parameterSource);
             ParsedSql parsedSql = NamedParameterUtils.parseSqlStatement(sql);
             Object[] params = NamedParameterUtils.buildValueArray(parsedSql, parameterSource, null);
             for (int i = 0; i < params.length; i++) {
                 Object o = params[i];
-                if (o instanceof String || o instanceof LocalDate || o instanceof Utf8) {
+                if (o instanceof Utf8) {
                     result_sql = result_sql.replaceFirst("\\?", "'" + o + "'");
-                } else {
+                }else {
                     result_sql = result_sql.replaceFirst("\\?", String.valueOf(o));
                 }
             }

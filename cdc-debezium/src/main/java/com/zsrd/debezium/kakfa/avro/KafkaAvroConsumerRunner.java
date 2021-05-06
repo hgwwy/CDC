@@ -89,7 +89,9 @@ public class KafkaAvroConsumerRunner {
         try {
             String driverName = jdbcTemplate.getDataSource().getConnection().getMetaData().getDriverName();
             if (driverName.equals("Oracle JDBC driver")) {
-                table = "\""+ StringUtils.upperCase(table) + "\"";
+                table = "\"" + StringUtils.upperCase(table) + "\"";
+            } else if (driverName.equals("SqlServer JDBC driver")) {
+                table = "[" + table + "]";
             }
             SqlProvider provider = SqlProviderFactory.getProvider(operation);
             if (Objects.isNull(provider)) {
@@ -111,7 +113,7 @@ public class KafkaAvroConsumerRunner {
                 Object o = params[i];
                 if (o instanceof Utf8) {
                     result_sql = result_sql.replaceFirst("\\?", "'" + o + "'");
-                }else {
+                } else {
                     result_sql = result_sql.replaceFirst("\\?", String.valueOf(o));
                 }
             }

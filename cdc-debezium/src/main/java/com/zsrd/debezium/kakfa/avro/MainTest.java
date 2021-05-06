@@ -5,6 +5,7 @@ import com.zsrd.debezium.utils.Jdbcutil;
 import org.springframework.util.Assert;
 
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.ParseException;
@@ -32,7 +33,12 @@ public class MainTest {
         Connection connection = Jdbcutil.getConnection(DriverConstants.ORACLE, url, user, pwd);
         Assert.notNull(connection, "获取连接失败");
         Statement statement = connection.createStatement();
-        statement.execute("insert into test values(1,'haha',{ts '2021-04-25 22:00:31'})");
+        //statement.execute("insert into test values(2,'haha',{ts '2021-04-25 22:00:31'})");
+        ResultSet resultSet = statement.executeQuery("select * from test where id = 1");
+        while (resultSet.next()) {
+            System.out.println(resultSet.getInt(1));
+            System.out.println(resultSet.getString(2));
+        }
         Jdbcutil.close(connection, statement);
     }
 }

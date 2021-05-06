@@ -1,0 +1,110 @@
+version: '2'
+services:
+  zookeeper:
+    image: debezium/zookeeper:1.5
+    ports:
+     - 2181:2181
+     - 2888:2888
+     - 3888:3888
+  kafka:
+    image: debezium/kafka:1.5
+    ports:
+     - 9092:9092
+    links:
+     - zookeeper
+    environment:
+     - ZOOKEEPER_CONNECT=zookeeper:2181
+  mysql:
+    image: debezium/example-mysql:1.5
+    ports:
+     - 3306:3306
+    environment:
+     - MYSQL_ROOT_PASSWORD=123456
+  sqlserver:
+    image: microsoft/mssql-server-linux:2017-CU9-GDR2
+    ports:
+      - 1433:1433
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_PID=Standard
+      - SA_PASSWORD=Password!
+      - MSSQL_AGENT_ENABLED=true
+  postgres:
+    image: debezium/example-postgres:1.5
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+  schema-registry:
+    image: confluentinc/cp-schema-registry:5.5.4
+    ports:
+     - 8181:8181
+     - 8081:8081
+    environment:
+     - SCHEMA_REGISTRY_KAFKASTORE_CONNECTION_URL=zookeeper:2181
+     - SCHEMA_REGISTRY_HOST_NAME=schema-registry
+     - SCHEMA_REGISTRY_LISTENERS=http://schema-registry:8081
+    links:
+     - zookeeper
+  rest-proxy:
+    image: confluent/rest-proxy
+    ports:
+      - 9082:9082
+    links:
+      - zookeeper
+      - kafka
+      - schema-registry
+  connect:
+    image: debezium/connect:1.5
+    ports:
+     - 8083:8083
+    links:
+     - kafka
+     - mysql
+     - sqlserver
+     - postgres
+     - schema-registry
+    environment:
+     - BOOTSTRAP_SERVERS=kafka:9092
+     - GROUP_ID=1
+     - CONFIG_STORAGE_TOPIC=my_connect_configs
+     - OFFSET_STORAGE_TOPIC=my_connect_offsets
+     - STATUS_STORAGE_TOPIC=my_connect_statuses
+  oracle-connect:
+    image: debezium/connect-with-oracle-jdbc:1.5
+    build:
+      context: debezium-with-oracle-jdbc
+      args:
+        DEBEZIUM_VERSION: 1.5
+    ports:
+      - 8084:8084
+    links:
+      - kafka
+    environment:
+      - BOOTSTRAP_SERVERS=kafka:9092
+      - GROUP_ID=1
+      - CONFIG_STORAGE_TOPIC=my_connect_configs
+      - OFFSET_STORAGE_TOPIC=my_connect_offsets
+      - STATUS_STORAGE_TOPIC=my_connect_statuses
+      - LD_LIBRARY_PATH=/instant_client
+      - KAFKA_DEBUG=true
+      - DEBUG_SUSPEND_FLAG=n
+      - JAVA_DEBUG_PORT=0.0.0.0:8084
+  db2-connect:
+    image: debezium/connect-db2:1.5
+    build:
+      context: ./debezium-db2-init/db2connect
+      args:
+        DEBEZIUM_VERSION: 1.5
+    ports:
+      - 8085:8085
+    links:
+      - kafka
+      - db2server
+    environment:
+      - BOOTSTRAP_SERVERS=kafka:9092
+      - GROUP_ID=1
+      - CONFIG_STORAGE_TOPIC=my_connect_configs
+      - OFFSET_STORAGE_TOPIC=my_connect_offsets
+      - STATUS_STORAGE_TOPIC=my_connect_statuses

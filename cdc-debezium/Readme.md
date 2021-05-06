@@ -10,8 +10,8 @@
     0.本例需要 zookeeper  kafka  mysql  kafka-connect 等服务的支持
     1.需要kafka的支持，监听 消费kafka数据达到同步功能
     2.每张表都有不同的schema，所以需要一个schema-registry来统一管理
-    3.本地docker安装schema-registry失败，所以本示例没有使用到
-    4.创建topic：dbserver1.inventory.demo  使用监听demo表的改动事件
+    3.
+    4.
     5.创建kafka connect
         curl -i -X POST -H "Accept:application/json" -H "Content-Type:application/json" localhost:8083/connectors
         {
@@ -25,6 +25,7 @@
             "database.password": "123456",
             "database.server.id": "184054",
             "database.server.name": "dbserver1",
+            "database.serverTimezone":"UTC" ,
             "database.whitelist": "inventory",
             "decimal.handling.mode": "double",
             "key.converter": "io.confluent.connect.avro.AvroConverter",
